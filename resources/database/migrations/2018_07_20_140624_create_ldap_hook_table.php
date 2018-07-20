@@ -13,12 +13,8 @@ class CreateLdapHookTable extends Migration
      */
     public function up()
     {
-        Schema::create('ldap_hook', function (Blueprint $table) {
-            $table->increments('id');
-
-            $table->string('name');
-
-            $table->timestamps();
+        Schema::table('users', function (Blueprint $table) {
+            $table->string('user_type');
         });
     }
 
@@ -29,6 +25,11 @@ class CreateLdapHookTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('ldap_hook');
+        if(Schema::hasColumn('users','user_type')) {
+            Schema::table('users',function(Blueprint $table) {
+                $table->dropColumn('user_type');
+               
+            });
+        }
     }
 }
