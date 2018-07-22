@@ -14,7 +14,19 @@ class LdapHookServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        /**
+            config file
+        **/
+        $config = __DIR__.'/Config/config.php';
+        $ldapConfig = __DIR__.'/Config/auth.php';
+
+        $this->publishes([
+            $config => config_path('adldap-hook.php'),
+            $ldapConfig => config_path('adldap-hook-auth.php'),
+        ], 'adldap-hook');
+
+        $this->mergeConfigFrom($config, 'adldap-hook');
+
     }
 
     /**
