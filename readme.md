@@ -33,3 +33,21 @@ php artisan hook:install ldap-hook
 ```
 php artisan hook:install ldap-hook
 ```
+
+6. Enable Voyager Hook
+```
+php artisan hook:enable ldap-hook
+```
+
+7. Go to routes/web.php and move the line:
+```
+	//ldap login
+	Route::post('login',['uses' => '\LdapHook\Http\Controllers\LdapHookAuthController@postLogin', 'as' => 'postlogin']);
+```
+to
+Route::group(['prefix' => 'admin'], function () {
+    Voyager::routes();
+	//ldap login
+	Route::post('login',['uses' => '\LdapHook\Http\Controllers\LdapHookAuthController@postLogin', 'as' => 'postlogin']);
+});
+
