@@ -4,6 +4,7 @@ namespace LdapHook;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Events\Dispatcher;
+use Illuminate\Filesystem\Filesystem;
 
 class LdapHookServiceProvider extends ServiceProvider
 {
@@ -36,11 +37,18 @@ class LdapHookServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        // Add routes with Voyager's prefix (group)
-        app(Dispatcher::class)->listen('voyager.admin.routing', function ($router) {
-            $router->get('ldap-hook', function () {
-                return 'Hola Jorge!';
-            });
-        });
+        $this->registerRoute();
+    }
+
+    public function registerRoute()
+    {
+        $filesystem = new Filesystem();
+        $routes_contents = $filesystem->get(base_path('routes/web.php'));
+        if (strpos($routes_contents, "Voyager::routes()")) {
+            $filesystem->append(
+                base_path('routes/web.php'),
+                " //Ldap Login \n\nRoute::post('login',['uses' => '\LdapHook\Http\Controllers\LdapHookAuthController@postLogin', 'as' => 'postlogin']);\n"
+            );
+        }
     }
 }
