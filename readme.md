@@ -45,9 +45,11 @@ php artisan hook:enable ldap-hook
 	Route::post('login',['uses' => '\LdapHook\Http\Controllers\LdapHookAuthController@postLogin', 'as' => 'postlogin']);
 ```
 to
+```
 Route::group(['prefix' => 'admin'], function () {
     Voyager::routes();
 	//ldap login
 	Route::post('login',['uses' => '\LdapHook\Http\Controllers\LdapHookAuthController@postLogin', 'as' => 'postlogin']);
 });
+```
 
