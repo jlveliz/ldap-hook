@@ -2,7 +2,7 @@
 
 Realised by [thejlmedia.com] (http://thejlmedia.com)
 
-##Instalation
+## Instalation
 
 1. Clone this repository on folder /hooks
 ```
