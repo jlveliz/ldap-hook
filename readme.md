@@ -9,37 +9,27 @@ Released by [thejlmedia.com] (http://thejlmedia.com)
 git clone https://gitlab.com/rikuhen/ldap-hook.git
 ```
 
-2. Go to root folder and execute 
+2. Go to root folder and install Voyager Hook
 ```
-composer require ldap-hook
+php artisan hook:install ldap-hook
 ```
 
-3. Copy the provider to config.php
+3. Register Provider in config/app.php
 ```
 LdapHook\LdapHookServiceProvider::class
 ```
 
 4. Publish vendor
 ```
-php artisan vendor:publish --provider="LdapHook\LdapHookServiceProvider::class"
+php artisan vendor:publish --tag="ldap-hook"
 ```
 
-5. Install Voyager Hook
-```
-php artisan hook:install ldap-hook
-```
-
-6. Enable Voyager Hook
-```
-php artisan hook:install ldap-hook
-```
-
-6. Enable Voyager Hook
+5. Enable Voyager Hook
 ```
 php artisan hook:enable ldap-hook
 ```
 
-7. Go to routes/web.php and move the line:
+6. Go to routes/web.php and move the line:
 ```
 	//ldap login
 	Route::post('login',['uses' => '\LdapHook\Http\Controllers\LdapHookAuthController@postLogin', 'as' => 'postlogin']);
