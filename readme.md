@@ -21,7 +21,7 @@ LdapHook\LdapHookServiceProvider::class
 
 4. Publish vendor
 ```
-php artisan vendor:publish --tag="ldap-hook"
+php artisan vendor:publish --tag="adldap-hook"
 ```
 
 5. Enable Voyager Hook
