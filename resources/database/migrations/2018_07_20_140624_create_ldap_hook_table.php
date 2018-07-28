@@ -14,8 +14,13 @@ class CreateLdapHookTable extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->string('username');
-            $table->string('user_type');
+            if(!Schema::hasColumn('users','user_type')) {
+                $table->string('user_type');
+            }
+
+            if (!Schema::hasColumn('users','username')) {
+                $table->string('username');
+            }
         });
     }
 
@@ -26,10 +31,15 @@ class CreateLdapHookTable extends Migration
      */
     public function down()
     {
-        if(Schema::hasColumn('users','user_type') && Schema::hasColumn('users','username') ) {
+        if(Schema::hasColumn('users','username') ) {
             Schema::table('users',function(Blueprint $table) {
-                $table->dropColumn('username');
-                $table->dropColumn('user_type');
+                if (Schema::hasColumn('users','user_type')) {
+                    $table->dropColumn('username');
+                }
+
+                if (Schema::hasColumn('users','username')) {
+                    $table->dropColumn('user_type');
+                }
                
             });
         }
