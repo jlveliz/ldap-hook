@@ -18,8 +18,8 @@ class LdapHookServiceProvider extends ServiceProvider
         /**
             config file
         **/
-        $config = app_path('vendor/adldap2/adldap2-laravel/Config/config.php');
-        $ldapConfig = app_path('vendor/adldap2/adldap2-laravel/config/auth.php');
+        $config = app_path('/vendor/adldap2/adldap2-laravel/src/Config/config.php');
+        $ldapConfig = app_path('/vendor/adldap2/adldap2-laravel/src/config/auth.php');
 
         $this->publishes([
             $config => config_path('adldap-hook.php'),
