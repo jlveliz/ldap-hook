@@ -29,12 +29,12 @@ php artisan vendor:publish --tag="adldap-hook"
 php artisan hook:enable ldap-hook
 ```
 
-6. Go to routes/web.php and move the line:
+6. Go to routes/web.php and add the next route after ```Voyager::routes(); ```:
 ```
 	//ldap login
 	Route::post('login',['uses' => '\LdapHook\Http\Controllers\LdapHookAuthController@postLogin', 'as' => 'postlogin']);
 ```
-to
+
 ```
 Route::group(['prefix' => 'admin'], function () {
     Voyager::routes();

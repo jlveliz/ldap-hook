@@ -4,6 +4,8 @@ namespace LdapHook\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
+use Adldap\Laravel\Facades\Adldap;
+use Auth;
 
 /**
  * 
@@ -13,7 +15,8 @@ class LdapHookAuthController extends Controller
 	
 	use AuthenticatesUsers;
 
-	public function postLogin(Request $request)
+    
+    public function postLogin(Request $request)
 	{
 		
 		$this->validateLogin($request);
@@ -28,10 +31,16 @@ class LdapHookAuthController extends Controller
         }
 
         $credentials = $this->credentials($request);
-
-        if ($this->guard()->attempt($credentials, $request->has('remember'))) {
+        if (Adldap::auth()->attempt($credentials[$this->username()],$credentials['password'])) {
+            //TODO UPDATE OR REGISTER ON TABLES
+            // $user = Adldap::search()->users()->where('uid',$credentials[$this->username()])->first();
+            // dd($user);
+            dd("Hi " . $credentials[$this->username()]);
             return $this->sendLoginResponse($request);
-        }
+        }elseif ($this->guard()->attempt($credentials, $request->has('remember'))){
+            
+        } 
+
 
         // If the login attempt was unsuccessful we will increment the number of attempts
         // to login and redirect the user back to the login form. Of course, when this
