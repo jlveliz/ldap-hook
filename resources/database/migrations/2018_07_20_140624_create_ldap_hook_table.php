@@ -15,11 +15,11 @@ class CreateLdapHookTable extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             if(!Schema::hasColumn('users','user_type')) {
-                $table->string('user_type');
+                $table->string('user_type')->nullable();
             }
 
             if (!Schema::hasColumn('users','username')) {
-                $table->string('username');
+                $table->string('username')->nullable();
             }
         });
     }

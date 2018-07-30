@@ -11,6 +11,9 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Contracts\Hashing\Hasher;
 use Illuminate\Auth\Events\Authenticated;
 use Adldap\Laravel\Auth\DatabaseUserProvider;
+use Adldap\Laravel\Listeners\BindsLdapUserModel;
+use Adldap\Laravel\Resolver\ResolverInterface;
+use Adldap\Laravel\Resolvers\UserResolver;
 use Adldap\AdldapInterface;
 
 
@@ -102,7 +105,7 @@ class LdapHookServiceProvider extends ServiceProvider
         // model to their Eloquent model upon authentication (if configured).
         // This allows us to utilize their LDAP model right
         // after authentication has passed.
-        Event::listen(Authenticated::class, Listeners\BindsLdapUserModel::class);
+        Event::listen(Authenticated::class, BindsLdapUserModel::class);
 
         if ($this->isLogging()) {
             // If logging is enabled, we will set up our event listeners that

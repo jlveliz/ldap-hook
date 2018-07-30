@@ -5,6 +5,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use Adldap\Laravel\Facades\Adldap;
+use LdapHook\Repository\LdapHookUserRepository;
 use Auth;
 
 /**
@@ -14,6 +15,14 @@ class LdapHookAuthController extends Controller
 {
 	
 	use AuthenticatesUsers;
+
+    private $ldapRepo;
+
+
+    public function __construct(LdapHookUserRepository $ldapRepo)
+    {
+        $this->ldapRepo = $ldapRepo;
+    }
 
     
     public function postLogin(Request $request)
@@ -32,22 +41,27 @@ class LdapHookAuthController extends Controller
 
         $credentials = $this->credentials($request);
         if (Adldap::auth()->attempt($credentials[$this->username()],$credentials['password'])) {
-            //TODO UPDATE OR REGISTER ON TABLES
-            // $user = Adldap::search()->users()->where('uid',$credentials[$this->username()])->first();
-            // dd($user);
-            dd("Hi " . $credentials[$this->username()]);
-            return $this->sendLoginResponse($request);
-        }elseif ($this->guard()->attempt($credentials, $request->has('remember'))){
             
-        } 
+            $user = $this->ldapRepo->insertOrUpdateUser($credentials[$this->username()],$credentials['password']);
+            if ($user) {
+                Auth::login($user, $request->has('remember'));
+                return $this->sendLoginResponse($request);
+            }
+        }elseif ($this->guard()->attempt($credentials, $request->has('remember'))){
+            return $this->sendLoginResponse($request);
+        }  else {
+
+            // If the login attempt was unsuccessful we will increment the number of attempts
+            // to login and redirect the user back to the login form. Of course, when this
+            // user surpasses their maximum number of attempts they will get locked out.
+            $this->incrementLoginAttempts($request);
+
+            return $this->sendFailedLoginResponse($request);
+
+        }
 
 
-        // If the login attempt was unsuccessful we will increment the number of attempts
-        // to login and redirect the user back to the login form. Of course, when this
-        // user surpasses their maximum number of attempts they will get locked out.
-        $this->incrementLoginAttempts($request);
-
-        return $this->sendFailedLoginResponse($request);
+       
 	}
 
 	/*
