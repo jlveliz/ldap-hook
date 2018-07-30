@@ -2,7 +2,6 @@
 namespace LdapHook\Repository;
 
 use Adldap\Laravel\Facades\Adldap;
-use TCG\Voyager\Models\Role;
 use Voyager;
 use Config;
 
@@ -15,7 +14,7 @@ class LdapHookUserRepository
 	private $userModel;
 	private $roleVoyagerModel;
 
-	public function __construct(Role $roleVoyagerModel)
+	public function __construct()
 	{
 		$this->userModel = Voyager::modelClass('User');
 		$this->roleVoyagerModel = Voyager::modelClass('Role');
