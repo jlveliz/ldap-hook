@@ -84,6 +84,7 @@ class LdapHookUserRepository
 			'email' => $userLdap->getUserPrincipalName(),
 			'username' => $userLdap->samaccountname[0], //RARE
 			'password' => bcrypt($password),
+			'role_id' => $this->setDefaultRole(),
 			'user_type' => 'ldap'
 		];
 	}
@@ -115,6 +116,12 @@ class LdapHookUserRepository
 	private function findGroupOnDb($groupName) 
 	{
 		return $this->roleVoyagerModel::where('name',$groupName)->orWhere('display_name',$groupName)->first();
+	}
+
+
+	private function setDefaultRole()
+	{
+		return $this->roleVoyagerModel::where('name','user')->first()->id;
 	}
 
 }
