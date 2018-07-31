@@ -4,6 +4,7 @@ namespace LdapHook\Repository;
 use Adldap\Laravel\Facades\Adldap;
 use Voyager;
 use Config;
+use Hash;
 
 /**
  * 
@@ -75,6 +76,24 @@ class LdapHookUserRepository
 
 
 	/**
+		validate user on db
+	**/
+	public function validateEloquentUser($username, $password)
+	{
+		$userDb = $this->userModel::where('email',$username)->first();
+		if ($userDb) {
+			if (Hash::check($password, $userDb->getAuthPassword())) {
+				return $userDb;
+			} else {
+				return false;
+			}
+		}
+
+		return false;
+	}
+
+
+	/**
 	 *  return formatted user on array
 	 */
 	private function getFormatUser($userLdap,$password)
@@ -121,7 +140,7 @@ class LdapHookUserRepository
 
 	private function setDefaultRole()
 	{
-		return $this->roleVoyagerModel::where('name','admin')->first()->id;
+		return $this->roleVoyagerModel::where('name','user')->first()->id;
 	}
 
 }

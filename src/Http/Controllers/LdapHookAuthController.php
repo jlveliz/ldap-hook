@@ -6,6 +6,7 @@ use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use Adldap\Laravel\Facades\Adldap;
 use LdapHook\Repository\LdapHookUserRepository;
+use Adldap\Auth\BindException;
 use Auth;
 
 /**
@@ -40,16 +41,29 @@ class LdapHookAuthController extends Controller
         }
 
         $credentials = $this->credentials($request);
-        if (Adldap::auth()->attempt($credentials[$this->username()],$credentials['password'])) {
+
+        //VERIFY CON
+        //
+        $existCnLdap = true;
+        try {
+            Adldap::connect();
+        } catch (BindException  $e) {
+            $existCnLdap = false;
+        }
+
+        
+        if ($existCnLdap && Adldap::auth()->attempt($credentials[$this->username()],$credentials['password'])) {
             
             $user = $this->ldapRepo->insertOrUpdateUser($credentials[$this->username()],$credentials['password']);
             if ($user) {
                 Auth::login($user, $request->has('remember'));
                 return $this->sendLoginResponse($request);
             }
-        }elseif (dd($this->guard('web')->attempt($credentials, $request->has('remember')))){
-            dd("entra");
-            return $this->sendLoginResponse($request);
+        }elseif ( $user = $this->ldapRepo->validateEloquentUser($credentials[$this->username()],$credentials['password']) ) {
+            if ($user) {
+                Auth::login($user, $request->has('remember'));
+                return $this->sendLoginResponse($request);
+            }
         }  else {
 
             // If the login attempt was unsuccessful we will increment the number of attempts
@@ -60,6 +74,7 @@ class LdapHookAuthController extends Controller
             return $this->sendFailedLoginResponse($request);
 
         }
+
 
 
        
