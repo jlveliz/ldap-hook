@@ -47,8 +47,8 @@ class LdapHookAuthController extends Controller
                 Auth::login($user, $request->has('remember'));
                 return $this->sendLoginResponse($request);
             }
-        }elseif ($this->guard()->attempt($credentials, $request->has('remember'))){
-            // dd("entra");
+        }elseif (dd($this->guard('web')->attempt($credentials, $request->has('remember')))){
+            dd("entra");
             return $this->sendLoginResponse($request);
         }  else {
 
