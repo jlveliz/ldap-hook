@@ -121,7 +121,7 @@ class LdapHookUserRepository
 
 	private function setDefaultRole()
 	{
-		return $this->roleVoyagerModel::where('name','user')->first()->id;
+		return $this->roleVoyagerModel::where('name','admin')->first()->id;
 	}
 
 }
